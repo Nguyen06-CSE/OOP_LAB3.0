@@ -120,11 +120,30 @@ namespace LAB3
                     break;
                 case 13:
                     Console.WriteLine("13. Tìm lớp không có sinh viên nữ");
-                    Console.WriteLine($"lop khong co sinh vien nu la {ds.LopKhongCoSVNu()}");
+                    if(ds.LopKhongCoSVNu().Count == 0 || ds.LopKhongCoSVNu() == null)
+                    {
+                        Console.WriteLine("danh sach rong !!!");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"lop khong co sinh vien nu la ");
+                        ds.XuatDanhSachChuoi(ds.LopKhongCoSVNu());
+                        
+                    }
                     break;
                 case 14:
                     Console.WriteLine("14. Tìm lớp không có sinh viên nam");
-                    Console.WriteLine($"lop khong co sinh vien nam la {ds.LopKhongCoSVNam()}");
+                    if (ds.LopKhongCoSVNam().Count == 0 || ds.LopKhongCoSVNam() == null)
+                    {
+                        Console.WriteLine("danh sach rong !!!");
+                    }
+                    else
+                    {
+
+                        Console.WriteLine($"lop khong co sinh vien nam la ");
+                        ds.XuatDanhSachChuoi(ds.LopKhongCoSVNam());
+
+                    }
                     break;
                 case 15:
                     Console.WriteLine("15. Đếm số lượng sinh viên theo lớp");
