@@ -58,13 +58,13 @@ namespace LAB3
                     Console.WriteLine("1. Đếm số lượng sinh viên Nam trong lớp");
                     Console.WriteLine("Nhap lop ban muon dem sinh vien: ");
                     lop = Console.ReadLine();
-                    Console.WriteLine($"Số lượng sinh viên Nam trong lớp {lop}: {ds.DemSoLuongSVNam(ds,lop)}");
+                    Console.WriteLine($"Số lượng sinh viên Nam trong lớp {lop}: {ds.DemSoLuongSVNam(lop)}");
                     break;
                 case 2:
                     Console.WriteLine("2. Đếm số lượng sinh viên Nữ trong lớp");
                     Console.WriteLine("Nhap lop ban muon dem sinh vien: ");
                     lop = Console.ReadLine();
-                    Console.WriteLine($"Số lượng sinh viên Nu trong lớp {lop}: {ds.DemSoLuongSVNu(ds,lop)}");
+                    Console.WriteLine($"Số lượng sinh viên Nu trong lớp {lop}: {ds.DemSoLuongSVNu(lop)}");
                     break;
                 case 3:
                     Console.WriteLine("3. Hiển thị danh sách sinh viên theo chiều tăng, giảm của điểm trung bình");

@@ -102,10 +102,14 @@ namespace LAB3
             return result.ToUpper();
         }
 
-
-        private int DemSoLuongSVTheoGioiTinhvaLop(DanhSachSinhVien ds, bool GT, string lop)
+        public int Dem(bool dk, int cnt)
         {
-            
+            if (dk) ++cnt;
+            return cnt;
+        }
+
+        private int DemSoLuongSVTheoGioiTinhvaLop(bool GT, string lop)
+        {
             // Kiểm tra nếu lớp được nhập không hợp lệ
             if (string.IsNullOrWhiteSpace(lop))
             {
@@ -119,14 +123,14 @@ namespace LAB3
             int count = 0; // Biến đếm số lượng sinh viên
 
             // Duyệt qua danh sách sinh viên để đếm số lượng phù hợp
-            foreach (var sinhVien in ds.ds)
+            foreach (var sinhVien in ds)
             {
                 // Chuẩn hóa giá trị lớp của sinh viên trước khi so sánh
                 string lopSinhVien = ChuanHoaKyTu(sinhVien.Lop);
-                if (sinhVien.gioiTinh == GT && lopSinhVien == lop)
-                {
-                    count++;
-                }
+                bool dk = sinhVien.gioiTinh == GT && lopSinhVien == lop;
+
+                // Gán lại giá trị của count
+                count = Dem(dk, count);
             }
 
             return count;
@@ -134,14 +138,14 @@ namespace LAB3
 
 
 
-        public int DemSoLuongSVNam(DanhSachSinhVien ds, string lop)
+        public int DemSoLuongSVNam( string lop)
         {
-            return DemSoLuongSVTheoGioiTinhvaLop(ds, true, lop);
+            return DemSoLuongSVTheoGioiTinhvaLop( true, lop);
         }
 
-        public int DemSoLuongSVNu(DanhSachSinhVien ds, string lop)
+        public int DemSoLuongSVNu( string lop)
         {
-            return DemSoLuongSVTheoGioiTinhvaLop(ds, false, lop);
+            return DemSoLuongSVTheoGioiTinhvaLop( false, lop);
         }
 
 
@@ -195,23 +199,33 @@ namespace LAB3
             SapXep(KieuSapXep.GiamDTB);
         }
 
+        //public List<string> TimLopCoDTBCaoNhat()
+        //{
+        //    //tao danh sach de luu cac lop co diem trung binh bang nhau
+        //    List<string> lopDiemCao = new List<string>();
+        //    //khoi tao gia tri max
+        //    float max = TimDTBCaoNhat();
+
+        //    foreach (var i in ds)
+        //    {
+        //        //neu tim thay lop co dTB bang max va danh sach de luu ket qua chua luu thong tin nay thi ta se them
+        //        if (i.dTB == max && !lopDiemCao.Contains(i.Lop))
+        //        {
+        //            lopDiemCao.Add(i.Lop);
+        //        }
+        //    }
+
+        //    //tra ve list lopDiemCao
+        //    return lopDiemCao;
+        //}
+
+
         public List<string> TimLopCoDTBCaoNhat()
         {
             //tao danh sach de luu cac lop co diem trung binh bang nhau
             List<string> lopDiemCao = new List<string>();
-            //khoi tao gia tri max
-            float max = TimDTBCaoNhat();
-
-            foreach (var i in ds)
-            {
-                //neu tim thay lop co dTB bang max va danh sach de luu ket qua chua luu thong tin nay thi ta se them
-                if (i.dTB == max && !lopDiemCao.Contains(i.Lop))
-                {
-                    lopDiemCao.Add(i.Lop);
-                }
-            }
-
-            //tra ve list lopDiemCao
+            var danhSachSV = TimDSSVCoDTBCaoNhat();
+            lopDiemCao = danhSachSV.LayDanhSachLop();
             return lopDiemCao;
         }
 
@@ -240,21 +254,83 @@ namespace LAB3
             Console.WriteLine();
         }
 
+        //cách 1 
+        //public void SapTheoLop_GiamTheoDTB()
+        //{
 
+        //    ds.Sort((sv1, sv2) =>
+        //    {
+        //        // So sánh lớp trước (sắp xếp tăng dần theo lớp)
+        //        int compareLop = sv1.Lop.CompareTo(sv2.Lop);
+
+        //        // Nếu lớp giống nhau, sắp xếp giảm dần theo điểm trung bình (DTB)
+        //        if (compareLop == 0)
+        //            return sv2.dTB.CompareTo(sv1.dTB); // Sắp giảm theo DTB
+
+        //        return compareLop;
+        //    });
+        //}
+
+        //cách 2 
+        //public void SapTheoLop()
+        //{
+        //    ds.Sort((sv1, sv2) => sv1.Lop.CompareTo(sv2.Lop));
+        //}
+
+        //public void SapTheoLop_GiamTheoDTB()
+        //{
+        //    SapTheoLop();
+        //    ds.Sort((sv1, sv2) => sv1.dTB.CompareTo(sv2.dTB));
+        //}
+
+
+        //thay vì dùng cách 1 và cách 2 theo LINQ thì cách 3 sẽ dùng vòng for để duyệt 
         public void SapTheoLop_GiamTheoDTB()
         {
-            ds.Sort((sv1, sv2) =>
+            int n = ds.Count;
+
+            //để tối ưu thì sẽ chọn thuật toán buble sort để duyệt mảng tuy nhiên với yêu cầu chỉ được dùng 1 vòng for nên sẽ không sử dụng cách này 
+            //for (int i = 0; i < ds.Count - 1; i++)
+            //{
+            //    for (int j = 0; j < ds.Count - 1 - i; j++)
+            //    {
+            //        // Compare class first
+            //        if (ds[j].Lop > ds[j + 1].Lop)
+            //        {
+            //            // Swap if the class is greater (ascending order)
+            //            Swap(ds, j, j + 1);
+            //        }
+            //        else if (ds[j].Lop == ds[j + 1].Lop && ds[j].dTB < ds[j + 1].dTB)
+            //        {
+            //            // If class is the same, sort by DTB in descending order
+            //            Swap(ds, j, j + 1);
+            //        }
+            //    }
+            //}
+
+
+                for (int i = 1; i < n; i++)
             {
-                // So sánh lớp trước (sắp xếp tăng dần theo lớp)
-                int compareLop = sv1.Lop.CompareTo(sv2.Lop);
-
-                // Nếu lớp giống nhau, sắp xếp giảm dần theo điểm trung bình (DTB)
-                if (compareLop == 0)
-                    return sv2.dTB.CompareTo(sv1.dTB); // Sắp giảm theo DTB
-
-                return compareLop;
-            });
+                //nếu không cùng lớp thì sẽ hoán vị để sắp xếp lớp hoạc nếu cùng lớp thì hoán vị để sắp xếp giảm theo điểm trung bình 
+                if (ds[i].Lop.CompareTo(ds[i - 1].Lop) < 0 ||
+                   (ds[i].Lop == ds[i - 1].Lop && ds[i].dTB > ds[i - 1].dTB))
+                {
+                    Swap(ds, i, i - 1);
+                    // vì không dược dùng 2 vòng for nên sau mỗi lần hoán vị sẽ cho i về 0 để duyệt lại mảng 
+                    i = 0; 
+                }
+            }
         }
+
+        // Swap function
+        private void Swap(List<SinhVien> list, int index1, int index2)
+        {
+            SinhVien temp = list[index1];
+            list[index1] = list[index2];
+            list[index2] = temp;
+        }
+
+
 
 
 
@@ -265,10 +341,12 @@ namespace LAB3
             foreach (var i in ds)
             {
                 //neu tim thay cac sinh vien cung lop va cac sinh vien do co diem cao hon thi se thang vi thu
-                if (sv.Lop == i.Lop && sv.dTB < i.dTB)
-                {
-                    vt++;
-                }
+                bool dk = sv.Lop == i.Lop && sv.dTB < i.dTB;
+                vt = Dem(dk, vt);
+                //if (sv.Lop == i.Lop && sv.dTB < i.dTB)
+                //{
+                //    vt++;
+                //}
             }
             return vt;
         }
@@ -490,7 +568,15 @@ namespace LAB3
 
         public void XoaTatCaSinhVienCuaLop(string Lop)
         {
-            
+            //for (int i = ds.Count - 1; i >= 0; i--)
+            //{
+            //    if (ChuanHoaKyTu(ds[i].Lop) == Lop)
+            //    {
+            //        ds.RemoveAt(i);
+            //    }
+            //}
+
+            //dung LINQ
             ds.RemoveAll(sv => ChuanHoaKyTu(sv.Lop) == Lop);
         }
 
